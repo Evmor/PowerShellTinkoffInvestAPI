@@ -5,6 +5,6 @@
 
 ## Установка
 1. Скачайте нужную версию 
-2.Используйте команду:
+2. Используйте команду:
 ```powershell
 Import-Module -Name ./PowerShellTinkoffInvestAPI.psm1
