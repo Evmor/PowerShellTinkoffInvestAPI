@@ -2913,19 +2913,23 @@ function Send-TIASandboxPayIn {
     [CmdletBinding(PositionalBinding=$false)]
     [Alias('SandboxPayIn')]
     param (
-        # AccountId - Номер счета для пополнения
+        # accountId - Номер счета для пополнения
         [Parameter(Mandatory)]
         [string]
-        $AccountID,
+        $accountID,
         # Currency - Валюта пополнения. По умолчанию 'RUB' (рубли).
         [Parameter(Mandatory)]
         [ValidateSet('RUB')]
         [string]
         $Currency,
-        # Units - Количество вносимой валюты. В данном случае количество рублей.
-        [Parameter(Mandatory)]
+        # Units - Количество вносимой валюты. В данном случае, количество рублей.
+        [Parameter()]
         [int]
-        $Units
+        $Units = 10000,
+        # Nano.
+        [Parameter()]
+        [int]
+        $nano = 5
     )
     begin {}
     process {
@@ -2934,10 +2938,11 @@ function Send-TIASandboxPayIn {
         $Headers = @{
             "accept" = "application/json"
             "Authorization" = "Bearer $Token"
+            "Content-Type" = "application/json"
         }
-        $ContentType = "application/json"
+        
         $Amount = @{
-            nano = 5
+            nano = $nano
             currency = $Currency
             units = $Units
         }
@@ -2949,9 +2954,8 @@ function Send-TIASandboxPayIn {
         $Response = Invoke-RestMethod -Uri $Url `
             -Method $Method `
             -Headers $Headers `
-            -ContentType $ContentType `
             -Body $Body
-        $Response.Content | ConvertFrom-Json
+        $Response.balance | ConvertFrom-Json
     }
     end {}
 }
